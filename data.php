@@ -96,7 +96,7 @@ foreach($rowsJurusan as $r){
                            Tambah Pendaftar
                         </a>
 
-                        <a href="logout.php"
+                        <a href="index.php"
                            class="my-[20px] block w-full no-underline bg-red-600 hover:bg-red-700 font-poppins font-bold text-white py-3 px-5 rounded-[7px] transition duration-300">
                            Logout
                         </a>

@@ -1,5 +1,6 @@
 <?php
-session_start();
+// Jangan include koneksi di sini jika sudah ada di file utama, 
+// tapi pastikan variabel $conn tersedia.
 include 'koneksi.php';
 
 if(isset($_POST['login'])){
@@ -10,11 +11,14 @@ if(isset($_POST['login'])){
     $password = $_POST['password'];
 
     if ($email === $admin_email && password_verify($password, $admin_password_hash)) {
-    $_SESSION['login'] = true;
-    header("Location: data.php");
-    exit;
-} else {
-    echo "Email atau password salah";
-}
+        $_SESSION['login'] = true;
+        header("Location: data.php");
+        exit;
+    } else {
+        $_SESSION['error'] = "Email atau Password Salah!";
+        // PERBAIKAN: Arahkan ke form.php, bukan login.php
+        header("Location: form.php"); 
+        exit;
+    }
 }
 ?>

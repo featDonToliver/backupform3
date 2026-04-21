@@ -4,12 +4,12 @@ session_start();
 $showSuccessModal = false;
 $namaUser = "";
 
-// Cek jika user sudah login kupon via session
+// Cek jika user sudah berhasil login kupon via session
 if (isset($_SESSION['kupon']) && $_SESSION['kupon'] === true && isset($_SESSION['nama'])) {
     $namaUser = htmlspecialchars($_SESSION['nama']);
     $showSuccessModal = true;
 } else {
-    // Jika akses langsung tanpa submit, arahkan ke kupon.php
+    // Jika akses langsung tanpa submit, arahkan kembali ke kupon.php
     header("Location: kupon.php");
     exit;
 }
@@ -26,7 +26,7 @@ if (isset($_SESSION['kupon']) && $_SESSION['kupon'] === true && isset($_SESSION[
     <style>body { font-family: 'Poppins', sans-serif; }</style>
 </head>
 <body class="bg-gray-800">
-    <div class="relative h-screen bg-cover bg-center" style="background-image: url(gambar/kuponjumbotron.jpg);">
+    <div class="relative h-screen bg-cover bg-center" style="background-image: url('gambar/kuponjumbotron.jpg');">
         
         <?php if ($showSuccessModal): ?>
         <div class="absolute inset-0 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm">
@@ -67,3 +67,10 @@ if (isset($_SESSION['kupon']) && $_SESSION['kupon'] === true && isset($_SESSION[
     </style>
 </body>
 </html>
+
+<?php 
+// HANCURKAN SESSION: Agar jika siswa me-refresh halaman ini, 
+// mereka tidak bisa melihatnya lagi dan akan dikembalikan ke form awal.
+unset($_SESSION['kupon']);
+unset($_SESSION['nama']);
+?>

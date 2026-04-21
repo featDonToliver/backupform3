@@ -1,20 +1,28 @@
 <?php
 session_start();
-include 'koneksi.php';
-
-$KODE_BENAR = "DISKON100";
+include 'koneksi.php'; // Pastikan sudah terhubung ke database
 
 if (isset($_POST['submit'])) {
-    $nama = $_POST['nama'];
-    $kupon = $_POST['kupon'];
+    // Gunakan real_escape_string untuk keamanan dari SQL Injection
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $kupon = mysqli_real_escape_string($conn, $_POST['kupon']);
 
-    if ($kupon == $KODE_BENAR) {
+    // CEK DATABASE: Cari kode kupon yang statusnya masih 'tersedia'
+    $query = mysqli_query($conn, "SELECT * FROM kupon WHERE kode_kupon = '$kupon' AND status = 'tersedia'");
+
+    if (mysqli_num_rows($query) > 0) {
+        // JIKA VALID: Update status kupon menjadi 'terpakai' agar tidak bisa dipakai 2 kali
+        mysqli_query($conn, "UPDATE kupon SET status = 'terpakai' WHERE kode_kupon = '$kupon'");
+
+        // Simpan data ke SESSION untuk dibawa ke kuponshow.php
         $_SESSION['kupon'] = true;
         $_SESSION['nama'] = $nama;
+        
         header("Location: kuponshow.php");
         exit;
     } else {
-        echo "<script>alert('Kode Kupon Salah!'); window.location='kupon.php';</script>";
+        // JIKA SALAH / SUDAH TERPAKAI: Tolak dan kembalikan ke form
+        echo "<script>alert('Kode Kupon Salah atau Sudah Pernah Digunakan!'); window.location='kupon.php';</script>";
         exit;
     }
 }
@@ -26,7 +34,6 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kupon</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -38,57 +45,32 @@ if (isset($_POST['submit'])) {
             <img src="gambar/smkti logo.png" alt="Logo SMK TI Bali Global" class="h-10 w-auto">
             <h1 class="text-[1.1rem] text-yellow-300 font-light">SMK TI Bali Global Denpasar</h1>
         </div>
-        <a href="form.php" class="btn-Kupon no-underline bg-[#1215c3] hover:bg-[var(--dark-blue)] text-white px-6 py-2 rounded-[20px] cursor-pointer transition duration-300">Login</a>
-
+        <a href="form.php" class="no-underline bg-[#1215c3] hover:bg-[var(--dark-blue)] mr-[5px] text-white px-6 py-2 rounded-[20px] cursor-pointer transition duration-300">Login</a>
+        <a href="index.php" class="no-underline bg-[#3B82F6] hover:bg-[var(--dark-blue)] ml-[5px] text-white px-6 py-2 rounded-[20px] cursor-pointer transition duration-300">Beranda</a>
     </nav>
 
-<div class="text-center text-white mt-[80px] px-4">
-    <h1 class="text-3xl md:text-5xl font-bold drop-shadow-lg">
-        REEDEM KODE ANDA DISINI
-    </h1>
-</div>
-
-<div class="flex items-center justify-center flex-1 p-4">
-
-<form method="post"
-      class="flex flex-col gap-6 bg-white/90 px-10 py-8 rounded-2xl shadow-xl w-full max-w-md">
-
-    <h2 class="text-2xl font-bold text-center text-gray-800">
-        Kupon
-    </h2>
-
-    <input type="text" 
-           name="nama" 
-           placeholder="Nama Siswa"
-           required
-           class="w-full bg-gray-200 px-4 py-2 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-
-    <div class="relative">
-        <input type="text" 
-               name="kupon" 
-               placeholder="Kode Kupon"
-               required
-               class="w-full bg-gray-200 px-4 py-2 pr-28 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-
-            <button type="submit"
-                    name="submit"
-                    class="absolute right-1 top-1/2 -translate-y-1/2 bg-[#3CC448] hover:bg-[#38AF43] text-white px-4 py-1 rounded-full text-sm transition">
-                Redeem
-            </button>
+    <div class="text-center text-white mt-[80px] px-4">
+        <h1 class="text-3xl md:text-5xl font-bold drop-shadow-lg">
+            REDEEM KODE ANDA DISINI
+        </h1>
     </div>
 
-    <div class="flex justify-center">
-        <button type="reset"
-                class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-full transition">
-            Batal
-        </button>
-    </div>
+    <div class="flex items-center justify-center flex-1 p-4">
+        <form method="post" class="flex flex-col gap-6 bg-white/90 px-10 py-8 rounded-2xl shadow-xl w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center text-gray-800">Kupon</h2>
 
-</form>
+            <input type="text" name="nama" placeholder="Nama Siswa" required
+                   class="w-full bg-gray-200 px-4 py-2 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
 
-</div>
+            <div class="relative">
+                <input type="text" name="kupon" placeholder="Kode Kupon" required
+                       class="w-full bg-gray-200 px-4 py-2 pr-28 rounded-full text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
 
-</div>
+                <button type="submit" name="submit"
+                        class="absolute right-1 top-1/2 -translate-y-1/2 bg-[#3CC448] hover:bg-[#38AF43] text-white px-4 py-1 rounded-full text-sm transition">
+                    Redeem
+                </button>
+            </div>
 
-</body>
-</html>
+            <div class="flex justify-center">
+                <button type="reset" class="w-full bg-red-500 hover:bg-red-600 text

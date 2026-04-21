@@ -1,5 +1,7 @@
 <?php
+session_start();
 include 'login.php';
+include 'toast.php';
 ?>
 
 <!DOCTYPE html>
