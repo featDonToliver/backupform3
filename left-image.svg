@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="none">
+  <rect width="600" height="600" rx="20" fill="#0d47a1"/>
+  <g transform="translate(40,80)" fill="#fff" font-family="Poppins, Arial, sans-serif">
+    <text x="0" y="60" font-size="28" font-weight="600">PPDB ONLINE</text>
+    <text x="0" y="140" font-size="44" font-weight="700">Generasi</text>
+    <text x="0" y="200" font-size="44" font-weight="700">Global &amp;</text>
+    <text x="0" y="260" font-size="44" font-weight="700">Berkompeten.</text>
+    <text x="0" y="340" font-size="16" font-weight="300">Bergabunglah dengan Sekolah IT Terbaik di Bali.</text>
+  </g>
+  <circle cx="480" cy="120" r="60" fill="#1976d2" opacity="0.6"/>
+  <circle cx="520" cy="420" r="40" fill="#1976d2" opacity="0.4"/>
+</svg>
